@@ -29,10 +29,15 @@ app.use("/user", userRoutes)
 
 app.use('/auth', authRoutes)
 
+// Movie
+// app.use('/' )
+
+// Display
 app.get("/", (req, res) => {
   res.json({ status: true, message: "Server running", version: "1.0"})
 })
 
+// Check port
 app.listen(port, () => {
   console.log(`Tickitz App listening on port ${port}`)
 })

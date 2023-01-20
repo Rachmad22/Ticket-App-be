@@ -28,12 +28,33 @@ const login = async (req, res) => {
           },
           process.env.JWT_KEY
         )
+
+        if (result) {
+          res.status(200).json({
+            status: true,
+            message: 'Login successful',
+            data: {
+              token,
+              profile: checkEmail[0]
+            }
+          })
+        } else {
+          throw { code: 401, message: 'Login failed, wrong password'}
+        }
       } catch (error) {
-        
+        res.status(error?.code ?? 500).json({
+          status:false,
+          message: error?.message ?? error,
+          data: []
+        })
       }
     })
   } catch (error) {
-    
+    res.status(error?.code ?? 500).json({
+      status: false,
+      message: error?.message ?? error,
+      data: []
+    })
   }
 }
 
