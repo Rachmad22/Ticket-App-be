@@ -7,7 +7,7 @@ const validateToken = (req, res, next) => {
 
     if(authorization){
       jwt.verify(
-        authorization.replace('Bearer ', ''),
+        authorization.split(' ')[1],
         process.env.JWT_KEY,
         (err, decoded) => {
           if (err) {

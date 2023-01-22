@@ -13,7 +13,7 @@ const login = async (req, res) => {
       throw { code: 401, message: 'Unregistered email'}
     }
 
-    bcrypt.compare(password, checkEmail[0].password, (err, result) => {
+    bcrypt.compare(password, checkEmail[0]?.password, (err, result) => {
       try {
         if (err) {
           throw 'There was an error on the server'
@@ -25,6 +25,7 @@ const login = async (req, res) => {
             name: checkEmail[0]?.firstname,
             email: checkEmail[0]?.email,
             iat: new Date().getTime(),
+            role: checkEmail[0]?.role
           },
           process.env.JWT_KEY
         )
@@ -35,7 +36,7 @@ const login = async (req, res) => {
             message: 'Login successful',
             data: {
               token,
-              profile: checkEmail[0]
+              profile: checkEmail[0],
             }
           })
         } else {
