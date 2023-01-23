@@ -83,7 +83,7 @@ const getAvailableMovie = async (req, res) => {
       getAllMovie = await movie.getAvailableMovieNameAsc()
     } else if(sort === "name_desc"){
       getAllMovie = await movie.getAvailableMovieNameDesc()
-    } else if(sort === "release__asc"){
+    } else if(sort === "release_asc"){
       getAllMovie = await movie.getAvailableMovieReleaseAsc()
     } else if(sort === "release_desc"){
       getAllMovie = await movie.getAvailableMovieReleaseDesc()
@@ -114,7 +114,7 @@ const getAvailableMovie = async (req, res) => {
           page: Number(page),
           limit: Number(limit),
           data: getAllMovie,
-          all_pagination: getCountMovie[0]?.count,
+          all_pagination: Number(getCountMovie[0]?.count),
         })
       } else {
         throw { code: 401, message: 'Data is empty, please try again'}
@@ -131,9 +131,9 @@ const getAvailableMovie = async (req, res) => {
 
 const getSearchedMovie = async (req, res) => {
   try {
-    const { title } = req.params;
+    const { name } = req.params;
 
-    let getSearchMovie = await movie.getSearchMovie({title})
+    let getSearchMovie = await movie.getSearchMovie({name})
 
     if(getSearchMovie.length > 0){
       res.status(200).json({
@@ -154,6 +154,67 @@ const getSearchedMovie = async (req, res) => {
   }
 }
 
+// Update
+const editAvailableMovie = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { name, genre, directed_by, duration, casts, synopsis, slug} = req.body
+
+    // Check movie, whether already or not
+    if(name){
+      const checkName = await movie.getAvailableMovieByName({name})
+    }
+
+    const file = req.files.photo
+
+    const mimeType = file.mimetype.split('/')[1];
+  
+    const allowedFile = ["jpg", "png", "jpeg", "webp"];
+  
+    if(allowedFile.find((item) => item === mimeType)) {
+      cloudinary.v2.uploader.upload(
+      file.tempFilePath,
+      { public_id: uuidv4() },
+      async function (error, result) {
+        if (error) {
+          throw "Photo upload failed";
+        }
+  
+        const getUser = await movie.getAvailableMovieById({id})
+  
+        const addToDbPhoto = await movie.editAvailableMoviePhoto({
+            id,
+            photo: result.url,
+            name,
+            genre,
+            directed_by,
+            duration,
+            casts,
+            synopsis,
+            slug,
+            getUser
+        });
+  
+        res.json({
+          status: true,
+          message: "User edited successful",
+          data: addToDbPhoto,
+        });
+      }
+    );
+    } else {
+        throw {code: 401, message: 'Upload failed, only photo format input'}
+      }
+  } catch (error) {
+    res.status(error?.code ?? 500).json({
+      status: false,
+      message: error?.message ?? error,
+      data: []
+    })
+  }
+}
+
+// Delete
 const deleteAvailableMovie = async (req, res) => {
   try {
     const { id } = req.params
@@ -182,6 +243,7 @@ const deleteAvailableMovie = async (req, res) => {
 
 // UPCOMING MOVIE
 
+// Create
 const createUpcomingMovie = async (req, res) => {
   try {
     const {
@@ -245,6 +307,7 @@ const createUpcomingMovie = async (req, res) => {
   }
 };
 
+// Read
 const getUpcomingMovie = async (req, res) => {
   try {
     const { id } = req.params
@@ -305,11 +368,101 @@ const getUpcomingMovie = async (req, res) => {
   }
 }
 
+// Update
+const editUpcomingMovie = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { name, genre, directed_by, duration, casts, synopsis, slug} = req.body
+
+    // Check movie, whether already or not
+    if(name){
+      const checkName = await movie.getUpcomingMovieByName({name})
+    }
+
+    const file = req.files.photo
+
+    const mimeType = file.mimetype.split('/')[1];
+  
+    const allowedFile = ["jpg", "png", "jpeg", "webp"];
+  
+    if(allowedFile.find((item) => item === mimeType)) {
+      cloudinary.v2.uploader.upload(
+      file.tempFilePath,
+      { public_id: uuidv4() },
+      async function (error, result) {
+        if (error) {
+          throw "Photo upload failed";
+        }
+  
+        const getUser = await movie.getUpcomingMovieById({id})
+  
+        const addToDbPhoto = await movie.editUpcomingMoviePhoto({
+            id,
+            photo: result.url,
+            name,
+            genre,
+            directed_by,
+            duration,
+            casts,
+            synopsis,
+            slug,
+            getUser
+        });
+  
+        res.json({
+          status: true,
+          message: "User edited successful",
+          data: addToDbPhoto,
+        });
+      }
+    );
+    } else {
+        throw {code: 401, message: 'Upload failed, only photo format input'}
+      }
+  } catch (error) {
+    res.status(error?.code ?? 500).json({
+      status: false,
+      message: error?.message ?? error,
+      data: []
+    })
+  }
+}
+
+// Delete
+const deleteUpcomingMovie = async (req, res) => {
+  try {
+    const { id } = req.params
+  
+    const checkId = await movie.getUpcomingMovieById({id})
+  
+    if(checkId.length === 0) {
+      throw {code: 401, message: 'Data is empty, please try again'}
+    }
+
+    await movie.deleteUpcomingMovie({id})
+
+    res.json({
+      status: true,
+      message: 'Movie deleted successful'
+    })
+    
+  } catch (error) {
+    res.status(error?.code ?? 500).json({
+      status: false,
+      message: error?.message ?? error,
+      data: []
+    })
+  }
+}
+
 module.exports = {
   createAvailableMovie,
   getAvailableMovie,
   getSearchedMovie,
+  editAvailableMovie,
   deleteAvailableMovie,
   createUpcomingMovie,
-  getUpcomingMovie
+  getUpcomingMovie,
+  editUpcomingMovie,
+  deleteUpcomingMovie
 };

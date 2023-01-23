@@ -10,7 +10,10 @@ router.post('/add',validateToken, validateRole ,validateCreateMovie, movieContro
 // Get movie
 router.get('', movieController.getUpcomingMovie)
 
-// Get searched movie
-router.get('/search', movieController.getSearchedMovie)
+// Update movie
+router.patch('/edit/:id', validateRole, validateToken, movieController.editUpcomingMovie)
+
+// Delete movie
+router.delete('/delete/:id', validateRole, validateToken, movieController.deleteUpcomingMovie)
 
 module.exports = router;

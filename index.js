@@ -5,8 +5,7 @@ const port = 3001; // Port used on localhost
 const bodyParser = require("body-parser");
 const helmet = require('helmet');
 const xss = require('xss-clean');
-const fileUpload = require('express-fileupload')
-const path = require('path')
+const fileUpload = require('express-fileupload');
 
 // Parse application urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))

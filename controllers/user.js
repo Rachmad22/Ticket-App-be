@@ -99,7 +99,22 @@ const getUsers = async (req, res) => {
 const editUser = async (req, res) => {
   try {
     const { id } = req.params
-    const { firstname, lastname, phone, email, password } = req.body
+    const { firstname, lastname, phone, email, password} = req.body
+    
+    // Check the user id, is there or not
+    const checkUser = await user.getUserById({id})
+
+    if(checkUser.length === 0){
+      throw { code: 401, message: `User with id ${id} doesn't exist`}
+    }
+
+    // Check phone number, whether already used or not
+    if (phone) {
+      const checkPhone = await user.getUserPhone({ phone })
+      if (checkPhone.length >= 1) {
+        throw { code: 401, message: 'Number already in use' }
+      }
+    }
     
     // Check email, whether already used or not
     if (email) {
@@ -110,51 +125,55 @@ const editUser = async (req, res) => {
       }
     }
 
-    // Check phone number, whether already used or not
-    if (phone) {
-      const checkPhone = await user.getUserPhone({ phone })
-      if (checkPhone.length >= 1) {
-        throw { code: 401, message: 'Number already in use' }
-      }
-    }
+    const getUser = await user.getUserById({id})
 
-    const file = req.files.photo
+    const file = req.files.photo 
 
-    const mimeType = file.mimetype.replace('/')[1];
-
-    const allowedFile = ["jpg", "png", "jpeg", "webp"];
-
-    if (allowedFile.find((item) => item === mimeType)) {
-      cloudinary.v2.uploader.upload(
-        file.tempFilePath,
-        { public_id: uuidv4() },
-        async function (error, result) {
-          if (error) {
-            throw "Photo upload failed";
+      const mimeType = file.mimetype.split('/')[1];
+  
+      const allowedFile = ["jpg", "png", "jpeg", "webp"];
+  
+      if (allowedFile.find((item) => item === mimeType)) {
+        cloudinary.v2.uploader.upload(
+          file.tempFilePath,
+          { public_id: uuidv4() },
+          function (error, result) {
+            if (error) {
+              throw "Photo upload failed";
+            }
+  
+            bcrypt.genSalt(saltRounds, (err, salt) => {
+              bcrypt.hash(password, salt, async (err, hash) => {
+                if(err){
+                  throw 'Authentication process failed, please try again'
+                }
+  
+                const addToDbPhoto = await user.editUserPhoto({
+                  id,
+                  firstname,
+                  lastname,
+                  phone,
+                  email,
+                  password: hash,
+                  photo: result.url,
+                  getUser
+                });
+    
+      
+                res.json({
+                  status: true,
+                  message: "User edited successful",
+                  data: addToDbPhoto,
+                });
+              })
+            })
+            
           }
+        );
+      } else {
+        throw {code: 401, message: 'Upload failed, only photo format input'}
+      }
 
-          const getUser = await user.getUserById({id})
-
-          const addToDb = await user.editUser({
-            firstname,
-            lastname,
-            phone,
-            email,
-            password,
-            photo: result.url,
-            getUser
-          });
-
-          res.json({
-            status: true,
-            message: "Movie edited successful",
-            data: addToDb,
-          });
-        }
-      );
-    } else {
-      throw {code: 401, message: 'Upload failed, only photo format input'}
-    }
   } catch (error) {
     res.status(error?.code ?? 500).json({
       status: false,

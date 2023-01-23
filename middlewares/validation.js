@@ -53,7 +53,7 @@ const validateEditUser = (req, res, next) => {
     phone: 'nullable|phoneNumber|minLength:11|maxLength:14',
     email: 'nullable|email|minLength:5|maxLength:70',
     password: 'nullable|minLength:8|alphaNumeric',
-    photo: 'nullable',
+    // photo: 'nullable',
   })
 
   rules.check().then(function (success) {
