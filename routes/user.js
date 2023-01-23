@@ -11,7 +11,7 @@ router.post('/add', validateCreateUser, userController.createUser);
 router.get("/:id?", validateRole ,validateToken, userController.getUsers);
 
 // Update user
-// router.patch('/edit', validateEditUser, userController.editUser)
+router.patch('/edit/:id', validateEditUser, userController.editUser)
 
 // Delete user
 router.delete('/delete/:id', validateRole, validateToken, userController.deleteUser)
