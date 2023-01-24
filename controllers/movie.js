@@ -209,7 +209,7 @@ const editAvailableMovie = async (req, res) => {
 
             res.json({
               status: true,
-              message: 'User edited successful',
+              message: 'Movie edited successful',
               data: addToDbPhoto
             })
           }
@@ -237,7 +237,7 @@ const editAvailableMovie = async (req, res) => {
 
       res.json({
         status: true,
-        message: 'User edited successful',
+        message: 'Movie edited successful',
         data: addToDb
       })
     }
@@ -456,7 +456,7 @@ const editUpcomingMovie = async (req, res) => {
 
             res.json({
               status: true,
-              message: 'User edited successful',
+              message: 'Movie edited successful',
               data: addToDbPhoto
             })
           }
@@ -484,7 +484,7 @@ const editUpcomingMovie = async (req, res) => {
 
       res.json({
         status: true,
-        message: 'User edited successful',
+        message: 'Movie edited successful',
         data: addToDb
       })
     }
