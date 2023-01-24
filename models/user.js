@@ -1,8 +1,8 @@
-const db = require("../db");
+const db = require('../db')
 
 // Create user to db
 const createUser = async (params) => {
-  const { firstname, lastname, phone, email, password } = params;
+  const { firstname, lastname, phone, email, password } = params
 
   return await db`
   INSERT INTO user_accounts (firstname, lastname, phone, email, password)
@@ -17,7 +17,7 @@ const createUserWithRole = async (params) => {
   INSERT INTO user_accounts (firstname, lastname, phone, email, password, role)
   VALUES (${firstname}, ${lastname}, ${phone}, ${email}, ${password}, ${role})
   `
-} 
+}
 
 // Get user from db
 const getAllUsers = async () => {
@@ -37,20 +37,20 @@ const getUserByEmail = async (params) => {
 }
 
 const getUserPhone = async (params) => {
-  const {phone} = params
+  const { phone } = params
 
   return await db`SELECT phone FROM user_accounts WHERE phone = ${phone}`
 }
 
 const getUserById = async (params) => {
-  const {id} = params
+  const { id } = params
 
   return await db`SELECT * FROM user_accounts WHERE id = ${id}`
 }
 
 // Update user to db
 const editUserPhoto = async (params) => {
-  const { id, firstname, lastname, phone, email, password, photo, getUser} = params
+  const { id, firstname, lastname, phone, email, password, photo, getUser } = params
 
   return await db`
   UPDATE user_accounts SET
@@ -65,7 +65,7 @@ const editUserPhoto = async (params) => {
 }
 
 const editUser = async (params) => {
-  const { id, firstname, lastname, phone, email, password, getUser} = params
+  const { id, firstname, lastname, phone, email, password, getUser } = params
 
   return await db`
   UPDATE user_accounts SET
@@ -80,7 +80,7 @@ const editUser = async (params) => {
 
 // Delete user from db
 const deleteUser = async (params) => {
-  const {id} = params
+  const { id } = params
 
   return await db`DELETE FROM "public"."user_accounts" WHERE id = ${id}`
 }
@@ -96,4 +96,4 @@ module.exports = {
   editUserPhoto,
   editUser,
   deleteUser
-};
+}

@@ -7,10 +7,10 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body
 
-    const checkEmail = await user.getUserByEmail({email})
+    const checkEmail = await user.getUserByEmail({ email })
 
-    if(checkEmail.length === 0){
-      throw { code: 401, message: 'Unregistered email'}
+    if (checkEmail.length === 0) {
+      throw { code: 401, message: 'Unregistered email' }
     }
 
     bcrypt.compare(password, checkEmail[0]?.password, (err, result) => {
@@ -36,15 +36,15 @@ const login = async (req, res) => {
             message: 'Login successful',
             data: {
               token,
-              profile: checkEmail[0],
+              profile: checkEmail[0]
             }
           })
         } else {
-          throw { code: 401, message: 'Login failed, wrong password'}
+          throw { code: 401, message: 'Login failed, wrong password' }
         }
       } catch (error) {
         res.status(error?.code ?? 500).json({
-          status:false,
+          status: false,
           message: error?.message ?? error,
           data: []
         })

@@ -10,4 +10,4 @@ const connect = postgres({
   password: process.env.DB_PASSWORD // Use the password you created
 })
 
-module.exports = connect;
+module.exports = connect
