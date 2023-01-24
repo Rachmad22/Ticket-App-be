@@ -1,4 +1,4 @@
-const { Validator, addCustomMessages } = require('node-input-validator');
+const { Validator } = require('node-input-validator')
 const jwt = require('jsonwebtoken')
 
 // User
@@ -10,9 +10,8 @@ const validateCreateUser = (req, res, next) => {
     email: 'required|email|minLength:5|maxLength:70',
     password: 'required|minLength:8|alphaNumeric',
     photo: 'nullable',
-    role: 'nullable',
+    role: 'nullable'
   })
-
 
   rules.check().then(function (success) {
     if (success) {
@@ -52,12 +51,12 @@ const validateEditUser = (req, res, next) => {
     lastname: 'nullable|regex:^[a-zA-Z_ ]+$|minLength:5|maxLength:20',
     phone: 'nullable|phoneNumber|minLength:11|maxLength:14',
     email: 'nullable|email|minLength:5|maxLength:70',
-    password: 'nullable|minLength:8|alphaNumeric',
+    password: 'nullable|minLength:8|alphaNumeric'
     // photo: 'nullable',
   })
 
   rules.check().then(function (success) {
-    if(success){
+    if (success) {
       next()
     } else {
       res.status(404).json({
@@ -97,21 +96,20 @@ const validateCreateMovie = (req, res, next) => {
 
 const validateRole = (req, res, next) => {
   try {
-    const { authorization } = req.headers;
-    
-    if(authorization){
+    const { authorization } = req.headers
+
+    if (authorization) {
       const token = authorization.split(' ')[1]
       const decoded = jwt.verify(token, process.env.JWT_KEY)
-    
-      if(decoded?.role === 'admin') {
+
+      if (decoded?.role === 'admin') {
         next()
       } else {
-        throw { code: 401, message: 'Only admins can access'}
+        throw { code: 401, message: 'Only admins can access' }
       }
     } else {
-      throw { code: 401, message: 'No token provide'}
+      throw { code: 401, message: 'No token provide' }
     }
-    
   } catch (error) {
     res.status(error?.code ?? 500).json({
       status: false,

@@ -1,4 +1,4 @@
-const db = require('../db');
+const db = require('../db')
 
 // AVAILABLE MOVIE
 
@@ -10,14 +10,20 @@ const createAvailableMovie = async (params) => {
 }
 
 // Read
+const getAllAvailableMovies = async () => {
+  return await db`SELECT * FROM available_movies`
+}
+
+const getAvailableMovieBySlug = async (params) => {
+  const { slug } = params
+
+  return await db`SELECT * FROM available_movies WHERE slug = ${slug}`
+}
+
 const getAvailableMovieByName = async (params) => {
   const { name } = params
 
   return await db`SELECT * FROM available_movies WHERE name = ${name}`
-}
-
-const getAllAvailableMovies = async () => {
-  return await db`SELECT * FROM available_movies`
 }
 
 const getAvailableMovieById = async (params) => {
@@ -74,7 +80,7 @@ const getSearchMovieDesc = async (params) => {
 
 // Update
 const editAvailableMoviePhoto = async (params) => {
-  const { id, photo, name, genre, directed_by, duration, casts, synopsis, slug, getUser} = params
+  const { id, photo, name, genre, directed_by, duration, casts, synopsis, slug, getUser } = params
 
   return await db`
   UPDATE available_movies SET
@@ -92,7 +98,7 @@ const editAvailableMoviePhoto = async (params) => {
 
 // Delete
 const deleteAvailableMovie = async (params) => {
-  const {id} = params
+  const { id } = params
 
   return await db`DELETE FROM "public"."available_movies" WHERE "id" = ${id}`
 }
@@ -101,20 +107,26 @@ const deleteAvailableMovie = async (params) => {
 
 // Create
 const createUpcomingMovie = async (params) => {
-  const { photo, name, genre, release_date, directed_by, duration, casts, synopsis } = params
+  const { photo, name, genre, directed_by, duration, casts, synopsis, slug } = params
 
-  return await db`INSERT INTO upcoming_movies (photo, name, genre, release_date, directed_by, duration, casts, synopsis) VALUES (${photo}, ${name}, ${genre}, ${release_date}, ${directed_by}, ${duration}, ${casts}, ${synopsis})`
+  return await db`INSERT INTO upcoming_movies (photo, name, genre, directed_by, duration, casts, synopsis, slug) VALUES (${photo}, ${name}, ${genre}, ${directed_by}, ${duration}, ${casts}, ${synopsis}, ${slug})`
 }
 
 // Read
+const getAllUpcomingMovies = async () => {
+  return await db`SELECT * FROM upcoming_movies`
+}
+
+const getUpcomingMovieBySlug = async (params) => {
+  const { slug } = params
+
+  return await db`SELECT * FROM upcoming_movies WHERE slug = ${slug}`
+}
+
 const getUpcomingMovieByName = async (params) => {
   const { name } = params
 
   return await db`SELECT * FROM upcoming_movies WHERE name = ${name}`
-}
-
-const getAllUpcomingMovies = async () => {
-  return await db`SELECT * FROM upcoming_movies`
 }
 
 const getUpcomingMovieById = async (params) => {
@@ -153,7 +165,7 @@ const getUpcomingMoviePagin = async (params) => {
 
 // Update
 const editUpcomingMoviePhoto = async (params) => {
-  const { id, photo, name, genre, directed_by, duration, casts, synopsis, slug, getUser} = params
+  const { id, photo, name, genre, directed_by, duration, casts, synopsis, slug, getUser } = params
 
   return await db`
   UPDATE upcoming_movies SET
@@ -171,15 +183,16 @@ const editUpcomingMoviePhoto = async (params) => {
 
 // Delete
 const deleteUpcomingMovie = async (params) => {
-  const {id} = params
+  const { id } = params
 
   return await db`DELETE FROM "public"."upcoming_movies" WHERE "id" = ${id}`
 }
 
 module.exports = {
   createAvailableMovie,
-  getAvailableMovieByName,
   getAllAvailableMovies,
+  getAvailableMovieByName,
+  getAvailableMovieBySlug,
   getAvailableMovieById,
   getCountAvailableMovie,
   getAvailableMovieNameAsc,
@@ -193,6 +206,7 @@ module.exports = {
   editAvailableMoviePhoto,
   deleteAvailableMovie,
   createUpcomingMovie,
+  getUpcomingMovieBySlug,
   getUpcomingMovieByName,
   getAllUpcomingMovies,
   getUpcomingMovieById,
