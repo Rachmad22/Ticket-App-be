@@ -47,11 +47,11 @@ const validateLogin = (req, res, next) => {
 
 const validateEditUser = (req, res, next) => {
   const rules = new Validator(req.body, {
-    firstname: 'nullable|regex:^[a-zA-Z_ ]+$|minLength:5|maxLength:20',
-    lastname: 'nullable|regex:^[a-zA-Z_ ]+$|minLength:5|maxLength:20',
-    phone: 'nullable|phoneNumber|minLength:11|maxLength:14',
-    email: 'nullable|email|minLength:5|maxLength:70',
-    password: 'nullable|minLength:8|alphaNumeric'
+    firstname: 'nullable',
+    lastname: 'nullable',
+    phone: 'nullable',
+    email: 'nullable',
+    password: 'nullable'
     // photo: 'nullable',
   })
 
