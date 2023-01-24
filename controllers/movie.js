@@ -8,15 +8,8 @@ const { connect } = require('../middlewares/redis')
 // Create
 const createAvailableMovie = async (req, res) => {
   try {
-    const {
-      name,
-      genre,
-      directed_by,
-      duration,
-      casts,
-      synopsis,
-      slug
-    } = req.body
+    const { name, genre, directed_by, duration, casts, synopsis, slug } =
+         req.body
 
     // Check movie, whether already or not
     const checkMovie = await movie.getAvailableMovieByName({ name })
@@ -29,7 +22,10 @@ const createAvailableMovie = async (req, res) => {
     const checkSlug = await movie.getAvailableMovieBySlug({ slug })
 
     if (checkSlug.length >= 1) {
-      throw { code: 401, message: 'Slug is already in use, please enter another slug' }
+      throw {
+        code: 401,
+        message: 'Slug is already in use, please enter another slug'
+      }
     }
 
     const file = req.files.photo
@@ -171,52 +167,79 @@ const getSearchedMovie = async (req, res) => {
 const editAvailableMovie = async (req, res) => {
   try {
     const { id } = req.params
-    const { name, genre, directed_by, duration, casts, synopsis, slug } = req.body
+    const { name, genre, directed_by, duration, casts, synopsis, slug } =
+         req.body
 
-    // Check movie, whether already or not
-    if (name) {
-      const checkName = await movie.getAvailableMovieByName({ name })
+    const checkMovie = await movie.getAvailableMovieById({ id })
+
+    if (checkMovie.length === 0) {
+      throw { code: 401, message: `Movie with id ${id} doesn't exist` }
     }
 
-    const file = req.files.photo
+    if (req.files && req.files.photo) {
+      const file = req.files.photo
 
-    const mimeType = file.mimetype.split('/')[1]
+      const mimeType = file.mimetype.split('/')[1]
 
-    const allowedFile = ['jpg', 'png', 'jpeg', 'webp']
+      const allowedFile = ['jpg', 'png', 'jpeg', 'webp']
 
-    if (allowedFile.find((item) => item === mimeType)) {
-      cloudinary.v2.uploader.upload(
-        file.tempFilePath,
-        { public_id: uuidv4() },
-        async function (error, result) {
-          if (error) {
-            throw 'Photo upload failed'
+      if (allowedFile.find((item) => item === mimeType)) {
+        cloudinary.v2.uploader.upload(
+          file.tempFilePath,
+          { public_id: uuidv4() },
+          async function (error, result) {
+            if (error) {
+              throw 'Photo upload failed'
+            }
+
+            const getUser = await movie.getAvailableMovieById({ id })
+
+            const addToDbPhoto = await movie.editAvailableMoviePhoto({
+              id,
+              photo: result.url,
+              name,
+              genre,
+              directed_by,
+              duration,
+              casts,
+              synopsis,
+              slug,
+              getUser
+            })
+
+            res.json({
+              status: true,
+              message: 'User edited successful',
+              data: addToDbPhoto
+            })
           }
-
-          const getUser = await movie.getAvailableMovieById({ id })
-
-          const addToDbPhoto = await movie.editAvailableMoviePhoto({
-            id,
-            photo: result.url,
-            name,
-            genre,
-            directed_by,
-            duration,
-            casts,
-            synopsis,
-            slug,
-            getUser
-          })
-
-          res.json({
-            status: true,
-            message: 'User edited successful',
-            data: addToDbPhoto
-          })
+        )
+      } else {
+        throw {
+          code: 401,
+          message: 'Upload failed, only photo format input'
         }
-      )
+      }
     } else {
-      throw { code: 401, message: 'Upload failed, only photo format input' }
+      const getUser = await movie.getAvailableMovieById({ id })
+
+      const addToDb = await movie.editAvailableMovie({
+        id,
+        name,
+        genre,
+        directed_by,
+        duration,
+        casts,
+        synopsis,
+        slug,
+        getUser
+      })
+
+      res.json({
+        status: true,
+        message: 'User edited successful',
+        data: addToDb
+      })
     }
   } catch (error) {
     res.status(error?.code ?? 500).json({
@@ -258,15 +281,8 @@ const deleteAvailableMovie = async (req, res) => {
 // Create
 const createUpcomingMovie = async (req, res) => {
   try {
-    const {
-      name,
-      genre,
-      directed_by,
-      duration,
-      casts,
-      synopsis,
-      slug
-    } = req.body
+    const { name, genre, directed_by, duration, casts, synopsis, slug } =
+         req.body
 
     const checkMovie = await movie.getUpcomingMovieByName({ name })
 
@@ -278,7 +294,10 @@ const createUpcomingMovie = async (req, res) => {
     const checkSlug = await movie.getUpcomingMovieBySlug({ slug })
 
     if (checkSlug.length >= 1) {
-      throw { code: 401, message: 'Slug is already in use, please enter another slug' }
+      throw {
+        code: 401,
+        message: 'Slug is already in use, please enter another slug'
+      }
     }
 
     const file = req.files.photo
@@ -395,52 +414,79 @@ const getUpcomingMovie = async (req, res) => {
 const editUpcomingMovie = async (req, res) => {
   try {
     const { id } = req.params
-    const { name, genre, directed_by, duration, casts, synopsis, slug } = req.body
+    const { name, genre, directed_by, duration, casts, synopsis, slug } =
+         req.body
 
-    // Check movie, whether already or not
-    if (name) {
-      const checkName = await movie.getUpcomingMovieByName({ name })
+    const checkMovie = await movie.getAvailableMovieById({ id })
+
+    if (checkMovie.length === 0) {
+      throw { code: 401, message: `Movie with id ${id} doesn't exist` }
     }
 
-    const file = req.files.photo
+    if (req.files && req.files.photo) {
+      const file = req.files.photo
 
-    const mimeType = file.mimetype.split('/')[1]
+      const mimeType = file.mimetype.split('/')[1]
 
-    const allowedFile = ['jpg', 'png', 'jpeg', 'webp']
+      const allowedFile = ['jpg', 'png', 'jpeg', 'webp']
 
-    if (allowedFile.find((item) => item === mimeType)) {
-      cloudinary.v2.uploader.upload(
-        file.tempFilePath,
-        { public_id: uuidv4() },
-        async function (error, result) {
-          if (error) {
-            throw 'Photo upload failed'
+      if (allowedFile.find((item) => item === mimeType)) {
+        cloudinary.v2.uploader.upload(
+          file.tempFilePath,
+          { public_id: uuidv4() },
+          async function (error, result) {
+            if (error) {
+              throw 'Photo upload failed'
+            }
+
+            const getUser = await movie.getUpcomingMovieById({ id })
+
+            const addToDbPhoto = await movie.editUpcomingMoviePhoto({
+              id,
+              photo: result.url,
+              name,
+              genre,
+              directed_by,
+              duration,
+              casts,
+              synopsis,
+              slug,
+              getUser
+            })
+
+            res.json({
+              status: true,
+              message: 'User edited successful',
+              data: addToDbPhoto
+            })
           }
-
-          const getUser = await movie.getUpcomingMovieById({ id })
-
-          const addToDbPhoto = await movie.editUpcomingMoviePhoto({
-            id,
-            photo: result.url,
-            name,
-            genre,
-            directed_by,
-            duration,
-            casts,
-            synopsis,
-            slug,
-            getUser
-          })
-
-          res.json({
-            status: true,
-            message: 'User edited successful',
-            data: addToDbPhoto
-          })
+        )
+      } else {
+        throw {
+          code: 401,
+          message: 'Upload failed, only photo format input'
         }
-      )
+      }
     } else {
-      throw { code: 401, message: 'Upload failed, only photo format input' }
+      const getUser = await movie.getUpcomingMovieById({ id })
+
+      const addToDb = await movie.editUpcomingMovie({
+        id,
+        name,
+        genre,
+        directed_by,
+        duration,
+        casts,
+        synopsis,
+        slug,
+        getUser
+      })
+
+      res.json({
+        status: true,
+        message: 'User edited successful',
+        data: addToDb
+      })
     }
   } catch (error) {
     res.status(error?.code ?? 500).json({

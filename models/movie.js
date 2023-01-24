@@ -96,6 +96,22 @@ const editAvailableMoviePhoto = async (params) => {
   `
 }
 
+const editAvailableMovie = async (params) => {
+  const { id, name, genre, directed_by, duration, casts, synopsis, slug, getUser } = params
+
+  return await db`
+  UPDATE available_movies SET
+  "name" = ${name || getUser[0]?.name},
+  "genre" = ${genre || getUser[0]?.genre},
+  "directed_by" = ${directed_by || getUser[0]?.directed_by},
+  "duration" = ${duration || getUser[0]?.duration},
+  "casts" = ${casts || getUser[0]?.casts},
+  "synopsis" = ${synopsis || getUser[0]?.synopsis},
+  "slug" = ${slug || getUser[0]?.slug}
+  WHERE "id" = ${id}
+  `
+}
+
 // Delete
 const deleteAvailableMovie = async (params) => {
   const { id } = params
@@ -181,6 +197,22 @@ const editUpcomingMoviePhoto = async (params) => {
   `
 }
 
+const editUpcomingMovie = async (params) => {
+  const { id, name, genre, directed_by, duration, casts, synopsis, slug, getUser } = params
+
+  return await db`
+  UPDATE upcoming_movies SET
+  "name" = ${name || getUser[0]?.name},
+  "genre" = ${genre || getUser[0]?.genre},
+  "directed_by" = ${directed_by || getUser[0]?.directed_by},
+  "duration" = ${duration || getUser[0]?.duration},
+  "casts" = ${casts || getUser[0]?.casts},
+  "synopsis" = ${synopsis || getUser[0]?.synopsis},
+  "slug" = ${slug || getUser[0]?.slug}
+  WHERE "id" = ${id}
+  `
+}
+
 // Delete
 const deleteUpcomingMovie = async (params) => {
   const { id } = params
@@ -204,6 +236,7 @@ module.exports = {
   getSearchMovieAsc,
   getSearchMovieDesc,
   editAvailableMoviePhoto,
+  editAvailableMovie,
   deleteAvailableMovie,
   createUpcomingMovie,
   getUpcomingMovieBySlug,
@@ -217,5 +250,6 @@ module.exports = {
   getUpcomingMovieReleaseDesc,
   getUpcomingMoviePagin,
   editUpcomingMoviePhoto,
+  editUpcomingMovie,
   deleteUpcomingMovie
 }

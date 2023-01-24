@@ -132,49 +132,78 @@ const editUser = async (req, res) => {
 
     const getUser = await user.getUserById({ id })
 
-    const file = req.files.photo
+    if (req.files && req.files.photo) {
+      const file = req.files.photo
 
-    const mimeType = file.mimetype.split('/')[1]
+      const mimeType = file.mimetype.split('/')[1]
 
-    const allowedFile = ['jpg', 'png', 'jpeg', 'webp']
+      const allowedFile = ['jpg', 'png', 'jpeg', 'webp']
 
-    if (allowedFile.find((item) => item === mimeType)) {
-      cloudinary.v2.uploader.upload(
-        file.tempFilePath,
-        { public_id: uuidv4() },
-        function (error, result) {
-          if (error) {
-            throw 'Photo upload failed'
-          }
+      if (allowedFile.find((item) => item === mimeType)) {
+        cloudinary.v2.uploader.upload(
+          file.tempFilePath,
+          { public_id: uuidv4() },
+          function (error, result) {
+            if (error) {
+              throw 'Photo upload failed'
+            }
 
-          bcrypt.genSalt(saltRounds, (err, salt) => {
-            bcrypt.hash(password, salt, async (err, hash) => {
-              if (err) {
-                throw 'Authentication process failed, please try again'
-              }
+            bcrypt.genSalt(saltRounds, (err, salt) => {
+              bcrypt.hash(password, salt, async (err, hash) => {
+                if (err) {
+                  throw 'Authentication process failed, please try again'
+                }
 
-              const addToDbPhoto = await user.editUserPhoto({
-                id,
-                firstname,
-                lastname,
-                phone,
-                email,
-                password: hash,
-                photo: result.url,
-                getUser
-              })
+                const addToDbPhoto = await user.editUserPhoto({
+                  id,
+                  firstname,
+                  lastname,
+                  phone,
+                  email,
+                  password: hash,
+                  photo: result.url,
+                  getUser
+                })
 
-              res.json({
-                status: true,
-                message: 'User edited successful',
-                data: addToDbPhoto
+                res.json({
+                  status: true,
+                  message: 'User edited successful',
+                  data: addToDbPhoto
+                })
               })
             })
-          })
+          }
+        )
+      } else {
+        throw {
+          code: 401,
+          message: 'Upload failed, only photo format input'
         }
-      )
+      }
     } else {
-      throw { code: 401, message: 'Upload failed, only photo format input' }
+      bcrypt.genSalt(saltRounds, (err, salt) => {
+        bcrypt.hash(password, salt, async (err, hash) => {
+          if (err) {
+            throw 'Authentication process failed, please try again'
+          }
+
+          const addToDb = await user.editUser({
+            id,
+            firstname,
+            lastname,
+            phone,
+            email,
+            password: hash,
+            getUser
+          })
+
+          res.json({
+            status: true,
+            message: 'User edited successful',
+            data: addToDb
+          })
+        })
+      })
     }
   } catch (error) {
     res.status(error?.code ?? 500).json({
