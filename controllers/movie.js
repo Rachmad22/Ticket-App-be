@@ -8,7 +8,7 @@ const { connect } = require('../middlewares/redis')
 // Create
 const createAvailableMovie = async (req, res) => {
   try {
-    const { name, genre, directed_by, duration, casts, synopsis, slug } =
+    const { name, genre, directed_by, duration, casts, synopsis, slug, price } =
          req.body
 
     // Check movie, whether already or not
@@ -51,7 +51,8 @@ const createAvailableMovie = async (req, res) => {
             duration,
             casts,
             synopsis,
-            slug
+            slug,
+            price
           })
 
           res.json({
@@ -167,7 +168,7 @@ const getSearchedMovie = async (req, res) => {
 const editAvailableMovie = async (req, res) => {
   try {
     const { id } = req.params
-    const { name, genre, directed_by, duration, casts, synopsis, slug } =
+    const { name, genre, directed_by, duration, casts, synopsis, slug, price } =
          req.body
 
     const checkMovie = await movie.getAvailableMovieById({ id })
@@ -204,6 +205,7 @@ const editAvailableMovie = async (req, res) => {
               casts,
               synopsis,
               slug,
+              price,
               getUser
             })
 
@@ -232,6 +234,7 @@ const editAvailableMovie = async (req, res) => {
         casts,
         synopsis,
         slug,
+        price,
         getUser
       })
 

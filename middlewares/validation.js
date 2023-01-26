@@ -76,7 +76,9 @@ const validateCreateMovie = (req, res, next) => {
     directed_by: 'required',
     duration: 'required',
     casts: 'required',
-    synopsis: 'required'
+    synopsis: 'required',
+    slug: 'required',
+    price: 'required'
   }, req.files.photo, {
     photo: 'required'
   })
