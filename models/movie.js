@@ -4,9 +4,9 @@ const db = require('../db')
 
 // Create
 const createAvailableMovie = async (params) => {
-  const { photo, name, genre, directed_by, duration, casts, synopsis, slug } = params
+  const { photo, name, genre, directed_by, duration, casts, synopsis, slug, price } = params
 
-  return await db`INSERT INTO available_movies (photo, name, genre, directed_by, duration, casts, synopsis, slug) VALUES (${photo}, ${name}, ${genre}, ${directed_by}, ${duration}, ${casts}, ${synopsis}, ${slug})`
+  return await db`INSERT INTO available_movies (photo, name, genre, directed_by, duration, casts, synopsis, slug, price) VALUES (${photo}, ${name}, ${genre}, ${directed_by}, ${duration}, ${casts}, ${synopsis}, ${slug}, ${price})`
 }
 
 // Read
@@ -80,7 +80,7 @@ const getSearchMovieDesc = async (params) => {
 
 // Update
 const editAvailableMoviePhoto = async (params) => {
-  const { id, photo, name, genre, directed_by, duration, casts, synopsis, slug, getUser } = params
+  const { id, photo, name, genre, directed_by, duration, casts, synopsis, slug, price, getUser } = params
 
   return await db`
   UPDATE available_movies SET
@@ -91,13 +91,14 @@ const editAvailableMoviePhoto = async (params) => {
   "duration" = ${duration || getUser[0]?.duration},
   "casts" = ${casts || getUser[0]?.casts},
   "synopsis" = ${synopsis || getUser[0]?.synopsis},
-  "slug" = ${slug || getUser[0]?.slug}
+  "slug" = ${slug || getUser[0]?.slug},
+  "price" = ${price || getUser[0]?.price}
   WHERE "id" = ${id}
   `
 }
 
 const editAvailableMovie = async (params) => {
-  const { id, name, genre, directed_by, duration, casts, synopsis, slug, getUser } = params
+  const { id, name, genre, directed_by, duration, casts, synopsis, slug, price, getUser } = params
 
   return await db`
   UPDATE available_movies SET
@@ -107,7 +108,8 @@ const editAvailableMovie = async (params) => {
   "duration" = ${duration || getUser[0]?.duration},
   "casts" = ${casts || getUser[0]?.casts},
   "synopsis" = ${synopsis || getUser[0]?.synopsis},
-  "slug" = ${slug || getUser[0]?.slug}
+  "slug" = ${slug || getUser[0]?.slug},
+  "price" = ${price || getUser[0]?.price}
   WHERE "id" = ${id}
   `
 }

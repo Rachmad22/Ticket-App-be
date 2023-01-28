@@ -18,6 +18,7 @@ const userRoutes = require('./routes/user')
 const authRoutes = require('./routes/auth')
 const availableMovieRoutes = require('./routes/available-movie')
 const upcomingMovieRoutes = require('./routes/upcoming-movie')
+const paymentRoutes = require('./routes/transaction')
 
 // Use cors
 app.use(cors()) // For all use
@@ -45,6 +46,9 @@ app.use('/auth', authRoutes)
 app.use('/movies', availableMovieRoutes)
 
 app.use('/upcoming-movies', upcomingMovieRoutes)
+
+// Transaction
+app.use('/payment', paymentRoutes)
 
 // Display
 app.get('/', (req, res) => {
