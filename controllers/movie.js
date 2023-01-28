@@ -102,6 +102,7 @@ const getAvailableMovie = async (req, res) => {
     connect.set('total', getAllMovie?.length, 'ex', 10)
     connect.set('limit', limit, 'ex', 10)
     connect.set('page', page, 'ex', 10)
+    connect.set('all_pagination', getCountMovie[0]?.count, 'ex', 10)
     connect.set('is_paginate', 'true', 'ex', 10)
 
     if (id) {
@@ -376,6 +377,7 @@ const getUpcomingMovie = async (req, res) => {
     connect.set('total', getAllMovie?.length, 'ex', 10)
     connect.set('limit', limit, 'ex', 10)
     connect.set('page', page, 'ex', 10)
+    connect.set('all_pagination', getCountMovie[0]?.count, 'ex', 10)
     connect.set('is_paginate', 'true', 'ex', 10)
 
     if (id) {

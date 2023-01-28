@@ -24,8 +24,8 @@ const useRedis = async (req, res, next) => {
           redis: true,
           status: true,
           message: 'Retrieved successfully',
-          // all_pagination: Number(all_pagination),
-          all_pagination: Number(total),
+          all_pagination: Number(all_pagination),
+          total: Number(total),
           page: Number(page),
           limit: Number(limit),
           data: JSON.parse(data)
