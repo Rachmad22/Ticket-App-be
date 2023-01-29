@@ -140,11 +140,11 @@ const getAvailableMovie = async (req, res) => {
   }
 }
 
-const getSearchedMovie = async (req, res) => {
+const getSearchedAvailableMovie = async (req, res) => {
   try {
     const { name } = req.params
 
-    const getSearchMovie = await movie.getSearchMovie({ name })
+    const getSearchMovie = await movie.getSearchAvailableMovie({ name })
 
     if (getSearchMovie.length > 0) {
       res.status(200).json({
@@ -415,6 +415,31 @@ const getUpcomingMovie = async (req, res) => {
   }
 }
 
+const getSearchedUpcomingMovie = async (req, res) => {
+  try {
+    const { name } = req.params
+
+    const getSearchMovie = await movie.getSearchUpcomingMovie({ name })
+
+    if (getSearchMovie.length > 0) {
+      res.status(200).json({
+        status: true,
+        message: 'Retrieved successful',
+        total: getSearchMovie.length,
+        data: getSearchMovie
+      })
+    } else {
+      throw { code: 401, message: 'Data is empty, please try again' }
+    }
+  } catch (error) {
+    res.status(error?.code ?? 500).json({
+      status: false,
+      message: error?.message ?? error,
+      data: []
+    })
+  }
+}
+
 // Update
 const editUpcomingMovie = async (req, res) => {
   try {
@@ -531,11 +556,12 @@ const deleteUpcomingMovie = async (req, res) => {
 module.exports = {
   createAvailableMovie,
   getAvailableMovie,
-  getSearchedMovie,
+  getSearchedAvailableMovie,
   editAvailableMovie,
   deleteAvailableMovie,
   createUpcomingMovie,
   getUpcomingMovie,
+  getSearchedUpcomingMovie,
   editUpcomingMovie,
   deleteUpcomingMovie
 }
