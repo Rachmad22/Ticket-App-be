@@ -12,7 +12,7 @@ router.post('/add', validateRole, validateCreateMovie, movieController.createAva
 router.get('', useRedis, movieController.getAvailableMovie)
 
 // Get searched movie
-router.get('/search/:name', movieController.getSearchedMovie)
+router.get('/search/:name', movieController.getSearchedAvailableMovie)
 
 // Update movie
 router.patch('/edit/:id', validateRole, validateToken, movieController.editAvailableMovie)

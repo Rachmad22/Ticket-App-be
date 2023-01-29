@@ -60,22 +60,10 @@ const getAvailableMoviePagin = async (params) => {
    }`
 }
 
-const getSearchMovie = async (params) => {
+const getSearchAvailableMovie = async (params) => {
   const { name } = params
 
   return await db`SELECT * FROM available_movies WHERE name ILIKE ${'%' + name + '%'} ORDER BY release_date DESC`
-}
-
-const getSearchMovieAsc = async (params) => {
-  const { name } = params
-
-  return await db`SELECT * FROM available_movies WHERE name ILIKE ${'%' + name + '%'} ORDER BY name ASC`
-}
-
-const getSearchMovieDesc = async (params) => {
-  const { name } = params
-
-  return await db`SELECT * FROM available_movies WHERE name ILIKE ${'%' + name + '%'} ORDER BY name DESC`
 }
 
 // Update
@@ -181,6 +169,12 @@ const getUpcomingMoviePagin = async (params) => {
    }`
 }
 
+const getSearchUpcomingMovie = async (params) => {
+  const { name } = params
+
+  return await db`SELECT * FROM upcoming_movies WHERE name ILIKE ${'%' + name + '%'} ORDER BY release_date DESC`
+}
+
 // Update
 const editUpcomingMoviePhoto = async (params) => {
   const { id, photo, name, genre, directed_by, duration, casts, synopsis, slug, getUser } = params
@@ -234,9 +228,7 @@ module.exports = {
   getAvailableMovieReleaseAsc,
   getAvailableMovieReleaseDesc,
   getAvailableMoviePagin,
-  getSearchMovie,
-  getSearchMovieAsc,
-  getSearchMovieDesc,
+  getSearchAvailableMovie,
   editAvailableMoviePhoto,
   editAvailableMovie,
   deleteAvailableMovie,
@@ -251,6 +243,7 @@ module.exports = {
   getUpcomingMovieReleaseAsc,
   getUpcomingMovieReleaseDesc,
   getUpcomingMoviePagin,
+  getSearchUpcomingMovie,
   editUpcomingMoviePhoto,
   editUpcomingMovie,
   deleteUpcomingMovie
