@@ -11,6 +11,9 @@ router.post('/add', validateToken, validateRole, validateCreateMovie, movieContr
 // Get movie
 router.get('', useRedis, movieController.getUpcomingMovie)
 
+// Get searched movie
+router.get('/search/:name', movieController.getSearchedUpcomingMovie)
+
 // Update movie
 router.patch('/edit/:id', validateRole, validateToken, movieController.editUpcomingMovie)
 
